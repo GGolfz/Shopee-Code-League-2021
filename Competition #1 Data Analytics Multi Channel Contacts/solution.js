@@ -33,13 +33,13 @@ const modifyData = async (data) => {
   let mpContact = {};
   data.forEach((el, index) => {
     if (!mpEmail[el.Email]) mpEmail[el.Email] = [];
-    mpEmail[el.Email] = [...mpEmail[el.Email], el.Id];
+    mpEmail[el.Email].push(el.Id);
 
     if (!mpPhone[el.Phone]) mpPhone[el.Phone] = [];
-    mpPhone[el.Phone] = [...mpPhone[el.Phone], el.Id];
+    mpPhone[el.Phone].push(el.Id);
 
     if (!mpOrder[el.OrderId]) mpOrder[el.OrderId] = [];
-    mpOrder[el.OrderId] = [...mpOrder[el.OrderId], el.Id];
+    mpOrder[el.OrderId].push(el.Id);
 
     if (!mpContact[el.Od]) mpContact[el.Id] = 0;
     mpContact[el.Id] += el.Contacts;
