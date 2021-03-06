@@ -4,7 +4,9 @@ let contacts;
 let csv = "ticket_id,ticket_trace/contact\n";
 
 const readDataFromFile = async () => {
+  console.log("Start Read File")
   const data = await fs.readFileSync("contacts.json", "utf8");
+  console.log("Finish Read File")
   return data;
 };
 const SIZE = 500000;
@@ -24,7 +26,6 @@ const printRoot = () => {
     const a = findRoot(i);
     ans += a + " ";
   }
-  console.log(ans);
 };
 const modifyData = async (data) => {
   let mpEmail = {};
@@ -43,7 +44,7 @@ const modifyData = async (data) => {
 
     if (!mpContact[el.Od]) mpContact[el.Id] = 0;
     mpContact[el.Id] += el.Contacts;
-    if (index % 10000 == 0) console.log("complete ", index);
+    if (index % 10000 == 0) console.log("COMPLETE: ", index);
   });
 
   const emails = Object.keys(mpEmail);
@@ -100,7 +101,6 @@ const modifyData = async (data) => {
       for (let i = 1; i < mpOrder[order].length; i++) {
         const a = mpOrder[order][i];
         const b = mpOrder[order][i - 1];
-
         const u = findRoot(a);
         const v = findRoot(b);
         root[u] = root[v];
@@ -108,12 +108,10 @@ const modifyData = async (data) => {
     }
   });
 
-  console.log("root");
   printRoot();
 
   let answerContact = {};
   root.forEach((el, i) => {
-    console.log(el);
     if (!answerContact[el]) answerContact[el] = { contact: 0, id: [] };
     answerContact[el].contact += data[i].Contacts;
     answerContact[el].id.push(data[i].Id);
@@ -129,7 +127,9 @@ const modifyData = async (data) => {
   for(let i of realAnswer){
     csv += i.id+',\"'+i.data+'\"\n';
   }
-  fs.writeFileSync('answer.csv',csv)
+  console.log("Start Write File")
+  fs.writeFileSync('solution.csv',csv)
+  console.log("Finish Write File")
 };
 
 const main = async () => {
