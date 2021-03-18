@@ -4,7 +4,7 @@ import spacy
 from tqdm import tqdm
 n_iter=5
 spacy.require_gpu()
-data = pd.read_csv('/kaggle/input/scl-2021-ds/train.csv')
+data = pd.read_csv('./train.csv')
 data["POI"] = data["POI/street"].str.split(pat='/').apply(lambda x:x[0])
 data["Street"] = data["POI/street"].str.split(pat='/').apply(lambda x:x[1])
 TRAIN_DATA = []
@@ -99,7 +99,7 @@ with ner_model.disable_pipes(*other_pipes):
             ner_model.update([text],[annotations],drop=0.5,sgd=optimizer,losses=losses)
 print("Finish Tranning Model")
 print("Load Test File")
-test_df = pd.read_csv('/kaggle/input/scl-2021-ds/test.csv')
+test_df = pd.read_csv('./test.csv')
 TEST_RESULT = []
 print("Start Testing Model")
 count = 0
@@ -107,18 +107,18 @@ for index,row in test_df.iterrows():
 	count += 1
 	if count % 10000 == 0:
 		print(count)
-    doc = ner_model(row["raw_address"])
-    poiTest = ''
-    streetTest =''
-    for ent in doc.ents:
-        temp = ent.label_
-        if temp in POI_DATA:
-            poiTest = ent.text
-        elif temp in STREET_DATA:
-            streetTest = ent.text
-    TEST_RESULT.append([row["id"],poiTest+'/'+streetTest])
+	doc = ner_model(row["raw_address"])
+	poiTest = ''
+	streetTest = ''
+	for ent in doc.ents:
+		temp = ent.label_
+		if temp in POI_DATA:
+			poiTest = ent.text
+		elif temp in STREET_DATA:
+			streetTest = ent.text
+	TEST_RESULT.append([row["id"],poiTest+'/'+streetTest])
 print("Finish Testing Model")
 answerDF = pd.DataFrame(TEST_RESULT,columns=['id', 'POI/street'])
 print("Start save output to file success")
-answerDF.to_csv('/output/kaggle/working/output.csv',index=False)
+answerDF.to_csv('./output.csv',index=False)
 print("Save output to file success")
