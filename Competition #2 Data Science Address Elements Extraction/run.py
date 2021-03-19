@@ -10,6 +10,8 @@ data["Street"] = data["POI/street"].str.split(pat='/').apply(lambda x:x[1])
 TRAIN_DATA = []
 STREET_DATA = set()
 POI_DATA = set()
+preferable_row = 10000
+data = data.drop([i for i in range(preferable_row,len(data))])
 print("Start Data Preparation")
 for index,row in data.iterrows():
     if (index+1) % 10000 == 0:
@@ -71,7 +73,7 @@ print("Create Blank en model")
 ner_model = spacy.blank('en')
 if 'ner' not in ner_model.pipe_names:
     ner = ner_model.create_pipe('ner')
-    ner_model.add_pipe('ner', last=True)
+    ner_model.add_pipe(ner, last=True)
 else:
     ner = ner_model.get_pipe('ner')
 print("Start Add Label to NER")
@@ -96,7 +98,10 @@ with ner_model.disable_pipes(*other_pipes):
             count += 1
             if count % 10000 == 0:
                 print(itn+1,":",count)
-            ner_model.update(([text],[annotations]),drop=0.5,sgd=optimizer,losses=losses)
+            try:
+                ner_model.update([text],[annotations],drop=0.5,sgd=optimizer,losses=losses)
+            except:
+                continue
 print("Finish Tranning Model")
 print("Load Test File")
 test_df = pd.read_csv('./test.csv')
