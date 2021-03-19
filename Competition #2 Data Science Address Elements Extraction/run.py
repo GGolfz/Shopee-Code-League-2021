@@ -90,13 +90,13 @@ with ner_model.disable_pipes(*other_pipes):
     optimizer = ner_model.begin_training()
     for itn in range(n_iter):
         losses = {}
-        print("Iteration",n_iter+1)
+        print("Iteration",itn+1)
         count = 0
         for text,annotations in tqdm(TRAIN_DATA):
             count += 1
             if count % 10000 == 0:
-                print(n_iter+1,":",count)
-            ner_model.update([text],[annotations],drop=0.5,sgd=optimizer,losses=losses)
+                print(itn+1,":",count)
+            ner_model.update(([text],[annotations]),drop=0.5,sgd=optimizer,losses=losses)
 print("Finish Tranning Model")
 print("Load Test File")
 test_df = pd.read_csv('./test.csv')
